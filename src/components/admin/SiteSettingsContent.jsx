@@ -18,6 +18,19 @@ const SiteSettingsContent = () => {
   const [showExchangeSection, setShowExchangeSection] = useState(true);
   const [showRoadmap, setShowRoadmap] = useState(true);
 
+  // Módulos del Panel de Usuario
+  const [showDeposits, setShowDeposits] = useState(true);
+  const [showWithdrawals, setShowWithdrawals] = useState(true);
+  const [showP2PMarketplace, setShowP2PMarketplace] = useState(true);
+  const [showCajeroAirtm, setShowCajeroAirtm] = useState(true);
+  const [showWhaleMonitor, setShowWhaleMonitor] = useState(true);
+  const [showCopyTrading, setShowCopyTrading] = useState(true);
+  const [showTradingPortfolio, setShowTradingPortfolio] = useState(true);
+  const [showPlanTrading, setShowPlanTrading] = useState(true);
+  const [showCollectiveFund, setShowCollectiveFund] = useState(true);
+  const [showVipChat, setShowVipChat] = useState(true);
+  const [showReferrals, setShowReferrals] = useState(true);
+
   // Features
   const [f1Title, setF1Title] = useState('');
   const [f1Desc, setF1Desc] = useState('');
@@ -105,6 +118,18 @@ const SiteSettingsContent = () => {
           setAirtmExtensionVersion(data.airtmExtensionVersion || '1.0.0');
           setShowExchangeSection(data.showExchangeSection !== undefined ? data.showExchangeSection : true);
           setShowRoadmap(data.showRoadmap !== undefined ? data.showRoadmap : true);
+          
+          setShowDeposits(data.showDeposits !== undefined ? data.showDeposits : true);
+          setShowWithdrawals(data.showWithdrawals !== undefined ? data.showWithdrawals : true);
+          setShowP2PMarketplace(data.showP2PMarketplace !== undefined ? data.showP2PMarketplace : true);
+          setShowCajeroAirtm(data.showCajeroAirtm !== undefined ? data.showCajeroAirtm : true);
+          setShowWhaleMonitor(data.showWhaleMonitor !== undefined ? data.showWhaleMonitor : true);
+          setShowCopyTrading(data.showCopyTrading !== undefined ? data.showCopyTrading : true);
+          setShowTradingPortfolio(data.showTradingPortfolio !== undefined ? data.showTradingPortfolio : true);
+          setShowPlanTrading(data.showPlanTrading !== undefined ? data.showPlanTrading : true);
+          setShowCollectiveFund(data.showCollectiveFund !== undefined ? data.showCollectiveFund : true);
+          setShowVipChat(data.showVipChat !== undefined ? data.showVipChat : true);
+          setShowReferrals(data.showReferrals !== undefined ? data.showReferrals : true);
         } else {
           // Si no existe, crear con valores por defecto
           try {
@@ -142,7 +167,18 @@ const SiteSettingsContent = () => {
               airtmExtensionUrl: '',
               airtmExtensionVersion: '1.0.0',
               showExchangeSection: true,
-              showRoadmap: true
+              showRoadmap: true,
+              showDeposits: true,
+              showWithdrawals: true,
+              showP2PMarketplace: true,
+              showCajeroAirtm: true,
+              showWhaleMonitor: true,
+              showCopyTrading: true,
+              showTradingPortfolio: true,
+              showPlanTrading: true,
+              showCollectiveFund: true,
+              showVipChat: true,
+              showReferrals: true
             });
             setSiteName('MaxiOS');
             setHomeText('Maximiza tus ganancias replicando a los mejores traders en tiempo real.');
@@ -200,7 +236,10 @@ const SiteSettingsContent = () => {
         footerLink1Text, footerLink2Text, footerLink3Text, footerLink4Text,
         airtmExtensionUrl, airtmExtensionVersion,
         showExchangeSection,
-        showRoadmap
+        showRoadmap,
+        showDeposits, showWithdrawals, showP2PMarketplace, showCajeroAirtm,
+        showWhaleMonitor, showCopyTrading, showTradingPortfolio, showPlanTrading,
+        showCollectiveFund, showVipChat, showReferrals
       };
 
       const docRef = doc(db, 'settings', 'siteConfig');
@@ -556,6 +595,42 @@ const SiteSettingsContent = () => {
             >
               <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all shadow-md ${showRoadmap ? 'left-8' : 'left-1'}`}></div>
             </button>
+          </div>
+        </div>
+
+        {/* Sección Control de Módulos (Sidebar Panel Usuario) */}
+        <div className="bg-slate-800/50 rounded-2xl p-6 border border-slate-700 shadow-lg space-y-6">
+          <h3 className="text-xl font-semibold text-blue-400 flex items-center gap-2 mb-2">
+            <span className="bg-blue-500/10 p-2 rounded-lg text-sm">🎛️</span>
+            Control de Secciones del Panel de Usuario
+          </h3>
+          <p className="text-sm text-slate-400 mb-4">Activa o desactiva las secciones visibles en el panel (Dashboard) para todos los usuarios.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { label: 'Depósitos', state: showDeposits, setter: setShowDeposits },
+              { label: 'Retiros', state: showWithdrawals, setter: setShowWithdrawals },
+              { label: 'P2P Marketplace', state: showP2PMarketplace, setter: setShowP2PMarketplace },
+              { label: 'Cajero Airtm', state: showCajeroAirtm, setter: setShowCajeroAirtm },
+              { label: 'Monitor Ballenas', state: showWhaleMonitor, setter: setShowWhaleMonitor },
+              { label: 'Señales VIP (Copy Trading)', state: showCopyTrading, setter: setShowCopyTrading },
+              { label: 'Mi Portafolio', state: showTradingPortfolio, setter: setShowTradingPortfolio },
+              { label: 'Plan de Trading', state: showPlanTrading, setter: setShowPlanTrading },
+              { label: 'Fondo Colectivo', state: showCollectiveFund, setter: setShowCollectiveFund },
+              { label: 'Chat Privado VIP', state: showVipChat, setter: setShowVipChat },
+              { label: 'Referidos', state: showReferrals, setter: setShowReferrals },
+            ].map((item, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-slate-900 border border-slate-700 rounded-xl">
+                <span className="text-xs font-bold text-white uppercase tracking-widest">{item.label}</span>
+                <button
+                  type="button"
+                  onClick={() => item.setter(!item.state)}
+                  className={`w-12 h-6 rounded-full transition-all relative ${item.state ? 'bg-blue-600' : 'bg-slate-700'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-md ${item.state ? 'left-7' : 'left-1'}`}></div>
+                </button>
+              </div>
+            ))}
           </div>
         </div>
 
