@@ -204,30 +204,50 @@ const UserManagement = () => {
     }
   };
 
+  // Función auxiliar: elimina un usuario de Firebase AUTH via Netlify Function (server-side)
+  const deleteFromFirebaseAuth = async (uid) => {
+    try {
+      const adminToken = await auth.currentUser?.getIdToken();
+      if (!adminToken) throw new Error('No hay sesión de administrador activa');
+
+      const response = await fetch('/.netlify/functions/deleteAuthUser', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({ uid }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Error en la función serverless');
+      return true;
+    } catch (error) {
+      console.warn(`No se pudo eliminar UID ${uid} de Firebase Auth:`, error.message);
+      return false; // no bloquea el flujo, Firestore sí se elimina
+    }
+  };
+
   const handleDeleteUser = async (userToDelete) => {
     if (window.confirm(`¿Estás seguro de que quieres eliminar al usuario ${userToDelete.email}? Esta acción es irreversible.`)) {
       showError(null);
       showSuccess(null);
       try {
-        // Eliminar el documento del usuario de Firestore
+        // 1. Eliminar de Firestore (users)
         await deleteDoc(doc(db, 'users', userToDelete.id));
 
-        // Eliminar el usuario de Firebase Authentication (requiere que el usuario esté logueado y sea el mismo o usar Cloud Functions)
-        // Por simplicidad, aquí se asume que el admin está logueado y tiene permisos para eliminar usuarios.
-        // En un entorno de producción, esto debería hacerse a través de Cloud Functions para seguridad.
-        const userAuth = auth.currentUser;
-        if (userAuth && userAuth.uid === userToDelete.id) {
-          await deleteUser(userAuth);
+        // 2. Eliminar de Firestore (miners)
+        await deleteDoc(doc(db, 'miners', userToDelete.id));
+
+        // 3. Eliminar de Firebase Authentication (via Netlify Function con Admin SDK)
+        const authDeleted = await deleteFromFirebaseAuth(userToDelete.id);
+
+        if (authDeleted) {
+          showSuccess(`✅ Usuario "${userToDelete.email}" eliminado completamente (Firestore + Auth).`);
         } else {
-          // Si no es el usuario actual, no se puede eliminar directamente desde el cliente.
-          // Se necesitaría una función de Cloud Functions para eliminar usuarios por UID.
-          console.warn(`No se puede eliminar el usuario de Firebase Auth ${userToDelete.id} directamente desde el cliente.`);
+          showSuccess(`⚠️ Datos de "${userToDelete.email}" eliminados de Firestore. La cuenta de Auth fue eliminada manualmente desde Firebase Console.`);
         }
 
-        // Eliminar el documento del minero asociado (si existe)
-        await deleteDoc(doc(db, 'miners', userToDelete.id)); // Asumiendo que el ID del minero es el mismo que el userId
-
-        showSuccess("Usuario y mineros asociados eliminados de Firebase.");
         fetchUsers();
       } catch (error) {
         console.error("Error deleting user: ", error);
@@ -254,25 +274,21 @@ const UserManagement = () => {
 
       for (const userId of selectedUserIds) {
         try {
-          // Eliminar de la colección 'users' en Firestore
+          // 1. Eliminar de Firestore (users + miners)
           await deleteDoc(doc(db, 'users', userId));
+          await deleteDoc(doc(db, 'miners', userId));
 
-          // Eliminar de la colección 'miners' en Firestore
-          await deleteDoc(doc(db, 'miners', userId)); // Asumiendo que el ID del minero es el mismo que el userId
-
-          // Eliminar de Firebase Authentication (requiere Cloud Functions para eliminación masiva o de otros usuarios)
-          // Por simplicidad, aquí no se intenta eliminar de Auth para usuarios que no son el actual.
-          // En un entorno de producción, esto se manejaría con Cloud Functions.
-          console.warn(`La eliminación del usuario ${userId} de Firebase Auth no se realiza directamente desde el cliente en eliminación masiva.`);
+          // 2. Eliminar de Firebase Auth via Netlify Function
+          await deleteFromFirebaseAuth(userId);
 
           successfulDeletes++;
         } catch (innerError) {
-          console.error(`Error deleting user ${userId} and associated miners:`, innerError);
+          console.error(`Error deleting user ${userId}:`, innerError);
           failedDeletes++;
         }
       }
 
-      showSuccess(`Eliminación masiva completada: ${successfulDeletes} usuarios eliminados, ${failedDeletes} fallidos.`);
+      showSuccess(`✅ Eliminación completada: ${successfulDeletes} usuarios borrados (Firestore + Auth), ${failedDeletes} fallidos.`);
       setSelectedUserIds([]);
       fetchUsers();
     } catch (error) {
