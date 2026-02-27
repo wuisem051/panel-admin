@@ -1,0 +1,4 @@
+/* Mock CSS module to satisfy import */
+.mock {
+  display: block;
+}
