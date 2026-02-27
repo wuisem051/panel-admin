@@ -1,28 +1,28 @@
-const vipPlansDefault = [
+const vipPlans = [
     {
-        id: 'standard',
-        name: 'Estándar',
-        price: 0,
-        description: 'Plan básico para comenzar en el mundo del trading.',
-        duration: 'Permanente',
-        benefits: ['Acceso a la plataforma', 'Gráficos en tiempo real', 'Soporte comunitario']
+        id: 'vip-standard',
+        name: 'VIP Bronze',
+        price: 50,
+        duration: '30 días',
+        description: 'Acceso a señales básicas de Trading Spot.',
+        benefits: ['Señales Spot', 'Soporte Básico', 'Canal de Telegram']
     },
     {
-        id: 'gold',
-        name: 'Oro',
-        price: 49.99,
-        description: 'Ideal para traders que buscan herramientas avanzadas.',
-        duration: 'Mensual',
-        benefits: ['Señales de trading básicas', 'Acceso a webinar semanal', 'Soporte prioritario']
+        id: 'vip-gold',
+        name: 'VIP Gold',
+        price: 100,
+        duration: '30 días',
+        description: 'Acceso a señales avanzadas Spot y Margen.',
+        benefits: ['Señales Spot & Margen', 'Soporte Prioritario', 'Análisis Técnico Semanal']
     },
     {
-        id: 'diamond',
-        name: 'Diamante',
-        price: 99.99,
-        description: 'La experiencia completa para profesionales.',
-        duration: 'Mensual',
-        benefits: ['Señales VIP de alta precisión', 'Mentoría 1 a 1', 'Gestión de cartera avanzada']
+        id: 'vip-diamond',
+        name: 'VIP Diamond',
+        price: 200,
+        duration: '30 días',
+        description: 'Acceso total a todas las operaciones y señales.',
+        benefits: ['Señales Spot, Margen & Futuros', 'Soporte 24/7', 'Mentoría 1-a-1']
     }
 ];
 
-export default vipPlansDefault;
+export default vipPlans;
