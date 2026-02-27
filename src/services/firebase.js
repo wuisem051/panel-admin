@@ -1,24 +1,28 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+import { getFunctions } from "firebase/functions";
 
-import { getStorage, connectStorageEmulator } from "firebase/storage";
-import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// ✅ SEGURIDAD: Las credenciales se leen desde variables de entorno
+// Nunca están hardcodeadas en el código fuente
 const firebaseConfig = {
-  apiKey: "AIzaSyCEv6ZfHdaN-eNEYvAcEa_FfcSci8sluFg",
-  authDomain: "pool-btc.firebaseapp.com",
-  projectId: "pool-btc",
-  storageBucket: "pool-btc.firebasestorage.app",
-  messagingSenderId: "1018976881268",
-  appId: "1:1018976881268:web:a87c5168227f056ac7df21",
-  measurementId: "G-S2KLE99V6Y"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Mantener el authDomain original de Firebase para asegurar la compatibilidad con Auth
-// Los dominios permitidos deben agregarse en la consola de Firebase (Autenticación > Configuración > Dominios autorizados)
-
+// Validación: falla silenciosamente si faltan variables de entorno
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  console.error(
+    "❌ Variables de entorno de Firebase no configuradas. " +
+    "Asegúrate de que el archivo .env existe con todas las variables VITE_FIREBASE_*"
+  );
+}
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -26,15 +30,5 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const functions = getFunctions(app);
-
-// Conectar a los emuladores de Firebase si estamos en desarrollo
-if (process.env.NODE_ENV === 'development') {
-  if (window.location.hostname === "localhost") {
-    connectAuthEmulator(auth, "http://localhost:9099");
-    connectFirestoreEmulator(db, "localhost", 8081);
-    connectStorageEmulator(storage, "localhost", 9199);
-    connectFunctionsEmulator(functions, "localhost", 5001);
-  }
-}
 
 export { auth, db, storage, functions };

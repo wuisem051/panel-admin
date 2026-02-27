@@ -3,3 +3,12 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Variables de entorno - NUNCA subir al repositorio
+.env
+.env.local
+.env.production
+.env.development
+
+# Build logs
+build_log.txt
