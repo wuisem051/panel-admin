@@ -1,60 +1,293 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Inter:wght@100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply font-['Inter'] antialiased text-slate-900 bg-[#f8fafc];
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-['Outfit'];
-  }
+/* Definición de variables CSS para temas claro y oscuro */
+:root {
+  /* Binance Pro Theme Tokens */
+  --binance-bg: #0b0e11;
+  --binance-card: #1e2329;
+  --binance-card-hover: #2b3139;
+  --binance-yellow: #fcd535;
+  --binance-yellow-hover: #f0b90b;
+  --binance-text: #eaecef;
+  --binance-text-gray: #848e9c;
+  --binance-gray: #474d57;
+  --binance-border: rgba(255, 255, 255, 0.05);
+
+  --bg-main: var(--binance-bg);
+  --card-bg: var(--binance-card);
+  --accent: var(--binance-yellow);
+
+  --light-bg: #f8fafc;
+  --light-card: rgba(255, 255, 255, 0.9);
+  --dark-text: #0f172a;
+  --light-text: #f1f5f9;
+  --dark-bg: var(--binance-bg);
+  --dark-card: var(--binance-card);
+  --accent-glow: rgba(252, 213, 53, 0.2);
+  --green-check: #10b981;
+  --gray-border: #e2e8f0;
+  --dark-border: rgba(255, 255, 255, 0.1);
+  --gray-text: #64748b;
+  --blue-link: #3b82f6;
+  --red-error: #ef4444;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Premium Gradients */
+  --gradient-blue: linear-gradient(135deg, #3b82f6, #2563eb);
+  --gradient-green: linear-gradient(135deg, #10b981, #059669);
+  --gradient-purple: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  --gradient-accent: linear-gradient(135deg, #f59e0b, #d97706);
+  --gradient-red: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
-@layer components {
-  .glass-card {
-    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl shadow-slate-200/50;
-  }
+/* Estilos base para el cuerpo */
+body {
+  font-family: 'Inter', sans-serif;
+  /* Por defecto, usa el tema claro */
+  background-color: var(--light-bg);
+  color: var(--dark-text);
 }
 
-@keyframes fade-up {
+/* Aplicar estilos del modo oscuro cuando la clase 'dark' está en el body */
+body.dark {
+  background-color: var(--binance-bg);
+  color: var(--binance-text);
+}
+
+/* Scrollbar Style Binance */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--binance-gray);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--binance-text-gray);
+}
+
+/* Global utility for hiding scrollbars but keeping functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animaciones para el Home Futurista */
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-@keyframes scale-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.animate-fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
 }
 
-.animate-fade-up {
-  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-fade-in-delay-1 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.3s;
 }
 
-.animate-scale-pulse {
-  animation: scale-pulse 2s infinite ease-in-out;
+.animate-fade-in-delay-2 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.6s;
 }
 
-/* Custom Scrollbar for Premium Feel */
-::-webkit-scrollbar {
-  width: 8px;
+.animate-fade-in-delay-3 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.9s;
 }
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
+
+.animate-fade-in-delay-4 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 1.2s;
 }
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
+
+.animate-fade-in-delay-5 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 1.5s;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+
+.animate-fade-in-delay-6 {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 1.8s;
+}
+
+/* Premium Animations */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.8);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float-delayed {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+
+  20% {
+    left: 100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+.animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shine::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(to right,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
+  transform: rotate(45deg);
+  animation: shine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
 }

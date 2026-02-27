@@ -1,50 +1,47 @@
-import React from 'react';
-import '@radix-ui/themes/styles.css';
-import { Theme } from '@radix-ui/themes';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { GlobalStateProvider } from './context/GlobalStateContext';
+import { ErrorProvider } from './context/ErrorContext';
+import { ColorPaletteProvider } from './context/ColorPaletteContext';
+import './index.css';
 
-import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
-import { AdminWrapper } from './components/AdminWrapper';
+// Lazy load pages
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Login = lazy(() => import('./pages/Login'));
 
-import { SiteProvider } from './context/SiteContext';
-import { ContentProvider } from './context/ContentContext';
-import { AnalyticsProvider } from './context/AnalyticsContext';
-
-const App: React.FC = () => {
+function App() {
   return (
-    <AnalyticsProvider>
-      <ContentProvider>
-        <SiteProvider>
-          <Theme appearance="inherit" radius="large" scaling="100%">
-            <Router>
-              <main className="min-h-screen font-inter">
-                <Routes>
-                  <Route path="/login" element={<Login />} />
-                  <Route
-                    path="/"
-                    element={
-                      <AdminWrapper>
-                        <Dashboard />
-                      </AdminWrapper>
-                    }
-                  />
-                </Routes>
-                <ToastContainer
-                  position="top-right"
-                  autoClose={3000}
-                  newestOnTop
-                  closeOnClick
-                  pauseOnHover
-                />
-              </main>
-            </Router>
-          </Theme>
-        </SiteProvider>
-      </ContentProvider>
-    </AnalyticsProvider>
+    <ErrorProvider>
+      <GlobalStateProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <ColorPaletteProvider>
+              <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <Suspense fallback={<div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">Cargando Sistema...</div>}>
+                  <Routes>
+                    <Route
+                      path="/login"
+                      element={<Login />}
+                    />
+                    <Route
+                      path="/*"
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </Suspense>
+              </Router>
+            </ColorPaletteProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </GlobalStateProvider>
+    </ErrorProvider>
   );
 }
 
