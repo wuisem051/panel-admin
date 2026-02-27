@@ -7,8 +7,10 @@ import {
     orderBy,
     doc,
     getDocs,
-    setDoc
+    setDoc,
+    deleteDoc
 } from 'firebase/firestore';
+
 import { FaTrash, FaUsers, FaCoins, FaListUl, FaEdit, FaSave, FaToggleOn, FaToggleOff } from 'react-icons/fa';
 
 const CollectiveFundManagement = () => {
@@ -138,8 +140,8 @@ const CollectiveFundManagement = () => {
                             <button
                                 onClick={() => setConfig({ ...config, displayMode: config.displayMode === 'real' ? 'manual' : 'real' })}
                                 className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl border transition-all ${config.displayMode === 'real'
-                                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                                        : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                    : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
                                     }`}
                             >
                                 <span className="font-bold text-xs uppercase tracking-widest">

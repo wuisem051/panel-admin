@@ -1,6 +1,8 @@
 import React, { useState, useContext } from 'react'; // Importar useContext
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ThemeContext } from '../context/ThemeContext'; // Importar ThemeContext
+import { useAuth } from '../context/AuthContext'; // Importar useAuth
+
 import VIPMemberManagement from '../admin/components/VIPMemberManagement';
 import ContentManagement from '../admin/components/ContentManagement';
 import UserManagement from '../admin/components/UserManagement';
@@ -23,6 +25,8 @@ import CollectiveFundManagement from '../admin/components/CollectiveFundManageme
 
 const AdminPanel = () => {
   const { darkMode } = useContext(ThemeContext); // Usar ThemeContext
+  const { logout } = useAuth(); // Usar useAuth
+
   const location = useLocation();
   const [unreadContactRequests, setUnreadContactRequests] = useState(0);
   const [unreadWithdrawalRequests, setUnreadWithdrawalRequests] = useState(0);
@@ -290,6 +294,21 @@ const AdminPanel = () => {
                 📊 Gestión Fondo Colectivo
               </Link>
             </li>
+            <li className="mt-8 pt-4 border-t border-white/5">
+              <button
+                onClick={async () => {
+                  if (window.confirm('¿Cerrar sesión del Panel Administrativo?')) {
+                    await logout();
+                    window.location.href = '/login';
+                  }
+                }}
+                className="w-full flex items-center py-2 px-3 rounded-lg text-sm font-bold text-red-400 hover:bg-red-500/10 transition-colors"
+              >
+                🚪 Cerrar Sesión
+              </button>
+            </li>
+
+
           </ul>
         </nav>
       </aside >
