@@ -1,15 +1,24 @@
 # Etapa 1: Construcción
-FROM node:20-alpine as build-stage
+FROM node:20-alpine AS build-stage
 WORKDIR /app
-COPY package*.json ./
+
+# Instalación de dependencias
+COPY package.json ./
+COPY package-lock.json* ./
 RUN npm install
+
+# Construcción de la App
 COPY . .
 RUN npm run build
 
 # Etapa 2: Servidor de Producción (Nginx)
 FROM nginx:stable-alpine
+
+# IMPORTANTE: Asegúrate de que tu carpeta de salida sea 'dist'. 
+# Si usas Vite es 'dist', si usas Create React App es 'build'.
 COPY --from=build-stage /app/dist /usr/share/nginx/html
-# Configuración de Nginx para manejar rutas de React (SPA)
+
+# Configuración de Nginx para SPA (Evita el error 404 al recargar)
 RUN echo 'server { \
     listen 80; \
     location / { \
@@ -19,5 +28,7 @@ RUN echo 'server { \
     } \
 }' > /etc/nginx/conf.d/default.conf
 
+# Exponemos el puerto interno del contenedor
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
