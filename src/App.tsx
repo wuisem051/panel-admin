@@ -1,32 +1,51 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import React from 'react';
+import '@radix-ui/themes/styles.css';
+import { Theme } from '@radix-ui/themes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-function App() {
-  const [count, setCount] = useState(0)
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import { AdminWrapper } from './components/AdminWrapper';
 
+import { SiteProvider } from './context/SiteContext';
+import { ContentProvider } from './context/ContentContext';
+import { AnalyticsProvider } from './context/AnalyticsContext';
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button onClick={() => setCount(count => count + 1)}>count is: {count}</button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  )
+    <AnalyticsProvider>
+      <ContentProvider>
+        <SiteProvider>
+          <Theme appearance="inherit" radius="large" scaling="100%">
+            <Router>
+              <main className="min-h-screen font-inter">
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route
+                    path="/"
+                    element={
+                      <AdminWrapper>
+                        <Dashboard />
+                      </AdminWrapper>
+                    }
+                  />
+                </Routes>
+                <ToastContainer
+                  position="top-right"
+                  autoClose={3000}
+                  newestOnTop
+                  closeOnClick
+                  pauseOnHover
+                />
+              </main>
+            </Router>
+          </Theme>
+        </SiteProvider>
+      </ContentProvider>
+    </AnalyticsProvider>
+  );
 }
 
-export default App
+export default App;
