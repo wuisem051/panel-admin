@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { collection, addDoc, onSnapshot, query, orderBy, limit, getDocs, deleteDoc, doc, writeBatch } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '../lib/firebase';
 
 export type EventType = 'visit' | 'view' | 'download' | 'redirect';
 
