@@ -34,7 +34,8 @@ function slugify(text: string) {
 }
 
 export default function Admin() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // No longer needed: const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = true; // Dashboard is now wrapped by AdminWrapper
   const [showPassword, setShowPassword] = useState(false);
   const [credentials, setCredentials] = useState({ ...ADMIN_CREDENTIALS });
 
@@ -80,14 +81,7 @@ export default function Admin() {
     setPagesForm([...footerPages]);
   }, [siteName, footerText, downloadTimer, homeHero, footerPages, showSettings, language, headCode, footerCode]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (credentials.username === ADMIN_CREDENTIALS.username && credentials.password === ADMIN_CREDENTIALS.password) {
-      setIsLoggedIn(true);
-    } else {
-      alert(`Invalid credentials. Demo credentials are shown below.\nUsername: ${ADMIN_CREDENTIALS.username}\nPassword: ${ADMIN_CREDENTIALS.password}`);
-    }
-  };
+
 
   // Games handlers
   const openNewGameForm = () => {
@@ -382,67 +376,7 @@ export default function Admin() {
   const { isLoading: contentLoading } = useContent();
   const { isLoading: settingsLoading } = useSiteSettings();
 
-  if (!isLoggedIn) {
-    return (
-      <div className="min-h-screen bg-slate-50">
-        <Header />
-        <main className="py-16">
-          <div className="max-w-md mx-auto px-4">
-            <div className="bg-white rounded-lg border border-slate-300 p-8">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Lock className="w-8 h-8 text-purple-600" />
-                </div>
-                <h1 className="text-2xl font-bold text-slate-800 mb-2">Admin Login</h1>
-                <p className="text-slate-600">Access the admin panel to manage content</p>
-              </div>
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Username</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                    <input
-                      type="text"
-                      value={credentials.username}
-                      onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-                      className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Enter username"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={credentials.password}
-                      onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-                      className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Enter password"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-                <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-colors">
-                  Login to Admin Panel
-                </button>
-              </form>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  // Removed local login check UI as it's handled by Login page and AdminWrapper
 
   return (
     <div className="min-h-screen bg-slate-50">
