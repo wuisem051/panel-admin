@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../services/firebase';
-import { collection, getDocs, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot, doc, updateDoc, writeBatch } from 'firebase/firestore';
 import { useError } from '../../context/ErrorContext';
 
 const BalanceManagement = () => {
@@ -154,6 +154,42 @@ const BalanceManagement = () => {
       setMassAmount('');
     } catch (err) {
       showError(`Error crítico: ${err.message}`);
+    }
+  };
+
+  const handleGlobalBalanceReset = async () => {
+    if (!window.confirm("⚠️ ATENCIÓN MÁXIMA: ¿Estás 100% seguro de que quieres establecer TODOS los balances a ZERO para TODOS los usuarios? Esta acción no se puede deshacer.")) {
+      return;
+    }
+
+    showSuccess(null);
+    showError(null);
+
+    try {
+      const batch = writeBatch(db);
+      let count = 0;
+
+      users.forEach((user) => {
+        const userRef = doc(db, 'users', user.id);
+        batch.update(userRef, {
+          balanceUSD: 0,
+          balanceBTC: 0,
+          balanceLTC: 0,
+          balanceDOGE: 0,
+          balanceUSDTTRC20: 0,
+          balanceUSDTFiat: 0,
+          balanceTRX: 0,
+          balanceVES: 0
+        });
+        count++;
+      });
+
+      await batch.commit();
+      showSuccess(`✅ ÉXITO GLOBAL: Se han vaciado completamente los saldos de ${count} usuarios.`);
+      setSelectedUserIds([]);
+    } catch (error) {
+      console.error("Error reseteando saldos globales:", error);
+      showError(`Error al intentar reiniciar saldos globales: ${error.message}`);
     }
   };
 
@@ -318,13 +354,23 @@ const BalanceManagement = () => {
               />
             </div>
 
-            <button
-              onClick={handleMassSubmit}
-              disabled={selectedUserIds.length === 0}
-              className="w-full bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-purple-500/20 transition-all uppercase text-[10px] tracking-[0.2em] border border-purple-400/30 transform active:scale-95"
-            >
-              Ejecutar Cambios Masivos
-            </button>
+            <div className="flex flex-col md:flex-row gap-4">
+              <button
+                onClick={handleMassSubmit}
+                disabled={selectedUserIds.length === 0}
+                className="flex-1 bg-purple-600 hover:bg-purple-500 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-purple-500/20 transition-all uppercase text-[10px] tracking-[0.2em] border border-purple-400/30 transform active:scale-95"
+              >
+                Ejecutar Cambios Masivos
+              </button>
+
+              <button
+                onClick={handleGlobalBalanceReset}
+                className="flex-1 bg-red-600/20 hover:bg-red-600 text-red-500 hover:text-white font-black py-4 px-8 rounded-2xl shadow-xl transition-all uppercase text-[10px] tracking-[0.2em] border border-red-500/30 transform active:scale-95 flex items-center justify-center gap-2"
+              >
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                RESET GLOBAL DE SALDOS (TODOS A ZERO)
+              </button>
+            </div>
           </div>
         </div>
       </div>

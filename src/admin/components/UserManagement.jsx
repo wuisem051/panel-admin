@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; // Importar React y hooks necesarios
 import { db, auth } from '../../services/firebase'; // Importar la instancia de Firebase Firestore y Auth
-import { collection, query, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
+import { collection, query, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteDoc, where, getDocs, writeBatch } from 'firebase/firestore';
 import { createUserWithEmailAndPassword, updateEmail, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { ThemeContext } from '../../context/ThemeContext'; // Importar ThemeContext
 import { useError } from '../../context/ErrorContext'; // Importar useError
@@ -296,7 +296,41 @@ const UserManagement = () => {
       showError(`Fallo al realizar la eliminación masiva: ${error.message}`);
     }
   };
+  const handleGlobalBalanceReset = async () => {
+    if (!window.confirm("⚠️ ATENCIÓN MÁXIMA: ¿Estás 100% seguro de que quieres establecer TODOS los balances (Saldos) a ZERO para ABSOLUTAMENTE TODOS los usuarios registrados? Esta acción no se puede deshacer.")) {
+      return;
+    }
 
+    showSuccess(null);
+    showError(null);
+
+    try {
+      const q = query(collection(db, 'users'));
+      const querySnapshot = await getDocs(q);
+      const batch = writeBatch(db);
+
+      let count = 0;
+      querySnapshot.forEach((userDoc) => {
+        batch.update(userDoc.ref, {
+          balanceUSD: 0,
+          balanceBTC: 0,
+          balanceLTC: 0,
+          balanceDOGE: 0,
+          balanceUSDTTRC20: 0,
+          balanceTRX: 0,
+          balanceVES: 0
+        });
+        count++;
+      });
+
+      await batch.commit();
+      showSuccess(`✅ ÉXITO GLOBAL: Se han vaciado completamente los saldos de ${count} usuarios.`);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error reseteando saldos globales:", error);
+      showError(`Error al intentar reiniciar saldos globales: ${error.message}`);
+    }
+  };
 
   return (
     <div className="p-8 md:p-12 min-h-screen bg-[#020617] text-slate-200 space-y-12 relative overflow-hidden">
@@ -393,6 +427,13 @@ const UserManagement = () => {
                 disabled={selectedUserIds.length === 0}
               >
                 Eliminar Permanentemente
+              </button>
+              <button
+                onClick={handleGlobalBalanceReset}
+                className="bg-orange-500/10 hover:bg-orange-500 text-orange-500 hover:text-white border border-orange-500/20 px-6 py-2.5 rounded-xl text-xs font-black transition-all flex items-center gap-2 uppercase tracking-wider"
+              >
+                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                RESET SALDOS (ZERO GLOBAL)
               </button>
             </div>
 
