@@ -56,9 +56,9 @@ const AdminPanel = () => {
   console.log("AdminPanel: Renderizando. unreadMinersCount:", unreadMinersCount);
 
   return (
-    <div className="flex h-screen text-white" style={{ backgroundColor: '#0f172a' }}>
+    <div className="flex h-screen text-main" style={{ backgroundColor: 'var(--bg-main)' }}>
       {/* Sidebar de Navegación */}
-      <aside className="w-64 p-2 shadow-lg overflow-y-auto custom-scrollbar" style={{ backgroundColor: '#1e293b' }}>
+      <aside className="w-64 p-2 shadow-lg overflow-y-auto custom-scrollbar" style={{ backgroundColor: 'var(--bg-sidebar)' }}>
         <div className="text-xl font-bold text-yellow-500 mb-6">Admin Dashboard</div>
         <nav>
           <ul>
@@ -314,7 +314,7 @@ const AdminPanel = () => {
       </aside >
 
       {/* Contenido Principal */}
-      <main className="flex-1 p-8 overflow-y-auto" style={{ backgroundColor: '#0f172a' }}>
+      <main className="flex-1 p-8 overflow-y-auto" style={{ backgroundColor: 'var(--bg-main)' }}>
         <h1 className="text-4xl font-bold mb-8 text-white">Panel de Administración</h1>
         <Routes>
           <Route

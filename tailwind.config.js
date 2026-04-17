@@ -35,6 +35,13 @@ export default {
           800: '#9d174d',
           900: '#831843',
         },
+        // Sistema Dinámico de Paletas (NUEVO)
+        main: 'var(--text-main)',
+        soft: 'var(--text-secondary)',
+        'bg-dynamic': 'var(--bg-main)',
+        'sidebar-dynamic': 'var(--bg-sidebar)',
+        'card-dynamic': 'var(--bg-card)',
+        'border-dynamic': 'var(--border-color)',
       },
     },
   },
