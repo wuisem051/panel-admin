@@ -30,6 +30,7 @@ const SiteSettingsContent = () => {
   const [showCollectiveFund, setShowCollectiveFund] = useState(true);
   const [showVipChat, setShowVipChat] = useState(true);
   const [showReferrals, setShowReferrals] = useState(true);
+  const [showP2PMonitor, setShowP2PMonitor] = useState(true);
 
   // Features
   const [f1Title, setF1Title] = useState('');
@@ -130,6 +131,7 @@ const SiteSettingsContent = () => {
           setShowCollectiveFund(data.showCollectiveFund !== undefined ? data.showCollectiveFund : true);
           setShowVipChat(data.showVipChat !== undefined ? data.showVipChat : true);
           setShowReferrals(data.showReferrals !== undefined ? data.showReferrals : true);
+          setShowP2PMonitor(data.showP2PMonitor !== undefined ? data.showP2PMonitor : true);
         } else {
           // Si no existe, crear con valores por defecto
           try {
@@ -178,7 +180,8 @@ const SiteSettingsContent = () => {
               showPlanTrading: true,
               showCollectiveFund: true,
               showVipChat: true,
-              showReferrals: true
+              showReferrals: true,
+              showP2PMonitor: true
             });
             setSiteName('MaxiOS');
             setHomeText('Maximiza tus ganancias replicando a los mejores traders en tiempo real.');
@@ -239,7 +242,7 @@ const SiteSettingsContent = () => {
         showRoadmap,
         showDeposits, showWithdrawals, showP2PMarketplace, showCajeroAirtm,
         showWhaleMonitor, showCopyTrading, showTradingPortfolio, showPlanTrading,
-        showCollectiveFund, showVipChat, showReferrals
+        showCollectiveFund, showVipChat, showReferrals, showP2PMonitor
       };
 
       const docRef = doc(db, 'settings', 'siteConfig');
@@ -619,6 +622,7 @@ const SiteSettingsContent = () => {
               { label: 'Fondo Colectivo', state: showCollectiveFund, setter: setShowCollectiveFund },
               { label: 'Chat Privado VIP', state: showVipChat, setter: setShowVipChat },
               { label: 'Referidos', state: showReferrals, setter: setShowReferrals },
+              { label: 'P2P Monitor', state: showP2PMonitor, setter: setShowP2PMonitor },
             ].map((item, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-slate-900 border border-slate-700 rounded-xl">
                 <span className="text-xs font-bold text-white uppercase tracking-widest">{item.label}</span>
